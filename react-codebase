@@ -1,0 +1,54 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+function App() {
+    const [inputData, setInputData] = useState('');
+    const [responseData, setResponseData] = useState(null);
+    const [selectedOption, setSelectedOption] = useState('');
+
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post('https://your-backend-url.com/bfhl', {
+                data: inputData.split(',')
+            });
+            setResponseData(response.data);
+        } catch (error) {
+            console.error('Error submitting data', error);
+        }
+    };
+
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
+
+    return (
+        <div className="App">
+            <h1>Your Roll Number</h1>
+            <textarea
+                value={inputData}
+                onChange={(e) => setInputData(e.target.value)}
+                placeholder="Enter comma-separated data"
+            />
+            <button onClick={handleSubmit}>Submit</button>
+
+            {responseData && (
+                <div>
+                    <select onChange={handleOptionChange}>
+                        <option value="">Select Data</option>
+                        <option value="alphabets">Alphabets</option>
+                        <option value="numbers">Numbers</option>
+                        <option value="highest_lowercase">Highest Lowercase Alphabet</option>
+                    </select>
+
+                    <div>
+                        {selectedOption && responseData[selectedOption] && (
+                            <pre>{JSON.stringify(responseData[selectedOption], null, 2)}</pre>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default App;
